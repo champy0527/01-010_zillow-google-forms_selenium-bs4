@@ -1,24 +1,5 @@
-import requests
-import os
-
 from listings import Listings
-from dotenv import load_dotenv
-
-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-# ------------------------------ CONSTANTS ------------------------------#
-
-load_dotenv()
-
-GOOGLE_FORMS_URL = "https://forms.gle/GdVtyzxEiRSvRH3j8"
-GOOGLE_USERNAME = os.getenv("GOOGLE_USERNAME")
-GOOGLE_PASSWORD = os.getenv("GOOGLE_PASSWORD")
-
+from google_form import GoogleForm
 
 # ---------------------------- ZILLOW LISTINGS ----------------------------#
 
@@ -27,5 +8,15 @@ addresses = listings.address_list()
 rent_prices = listings.rent_price_list()
 url_links = listings.url_list()
 
+# ---------------------------- GOOGLE FORM ----------------------------#
+
+google_form = GoogleForm()
+
+for (address, rent_price, url_link) in zip(addresses, rent_prices, url_links):
+    print(f"Address: {address}, Rent Price: {rent_price}, URL: {url_link}")  # Check values
+    google_form.enter_form_input(address, rent_price, url_link)
+    google_form.submit_entry()
+    google_form.next_entry()
 
 
+google_form.close_driver()
